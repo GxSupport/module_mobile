@@ -22,7 +22,6 @@ DerivedData
 *.xcuserstate
 **/.xcode.env.local
 package-lock.json
-
 # Android/IntelliJ
 #
 build/

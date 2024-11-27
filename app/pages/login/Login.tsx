@@ -15,11 +15,13 @@ import {COLORS} from '../../constants/Colors.ts';
 import PhoneInput from 'react-phone-number-input/react-native-input';
 import Icon from 'react-native-vector-icons/Ionicons';
 import api from '../../config/api.ts';
+import {setStorage} from '../../helpers/Storage.ts';
+import {useNavigation} from '@react-navigation/native';
 
 export const Login = () => {
+  const navigation = useNavigation();
   const [keyboardOffset, setKeyboardOffset] = useState(0);
   const scrollViewRef = useRef(null);
-
   const [phone, setPhone] = useState('');
   const [inputValue, setInputValue] = useState({
     password: '',
@@ -58,12 +60,6 @@ export const Login = () => {
   };
 
   const login = async () => {
-    // console.log(phone, 'phone');
-    // console.log(inputValue);
-    console.log({
-      phone: phone.slice(1),
-      password: inputValue.password,
-    });
     try {
       const token = await api({
         url: '/api/login',
@@ -73,7 +69,11 @@ export const Login = () => {
           password: inputValue.password,
         },
       });
-      console.log(token.data);
+      await setStorage('access_token', token.data?.access_token);
+      if (token.data?.access_token) {
+        // navigation.navigate('Home');
+        navigation.navigate('Main', {screen: "Home"});
+      }
     } catch (error) {
       console.log(error);
     } finally {

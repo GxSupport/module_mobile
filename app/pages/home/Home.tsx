@@ -1,10 +1,10 @@
 import React from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import {Card} from '../../components/home/Card.tsx';
 
 function Home() {
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView className={'panel'}>
       <View>
         <Card />
         <Card />
@@ -15,11 +15,3 @@ function Home() {
 }
 
 export default Home;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    paddingHorizontal: 10,
-  },
-});

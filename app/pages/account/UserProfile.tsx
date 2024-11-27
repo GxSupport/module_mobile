@@ -18,7 +18,6 @@ export const UserProfile = () => {
       console.error(err, 'Token o`chirishda xatolik bor');
       return false;
     });
-
     console.log('Token o`chirildi:', result);
     setIsLogout(false);
     if (result) {

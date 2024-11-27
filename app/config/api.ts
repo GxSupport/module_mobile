@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {BaseUrl} from '../constants/urls.ts';
+import {getStorage} from '../helpers/Storage.ts';
 
 const api = axios.create({
   baseURL: BaseUrl,
@@ -9,10 +10,14 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(
-  async (config: any) => {
+  async config => {
+    const token = await getStorage('access_token');
+    if (token) {
+      config.headers.authorization = `Bearer ${token}`;
+    }
     return config;
   },
-  (error: any) => {
+  error => {
     return Promise.reject(error);
   },
 );

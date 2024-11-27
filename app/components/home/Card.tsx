@@ -1,14 +1,24 @@
 import React from 'react';
-import {Image, Text, View} from 'react-native';
+import {Image, Linking, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {BaseUrl} from '../../constants/urls.ts';
 
-const cardBg = require('../../assets/img/cardBg.png');
+// const cardBg = require('../../assets/img/cardBg.png');
 const profileImg = require('../../assets/img/profile.png');
-export const Card = () => {
+export const Card = ({item}: {item: any}) => {
   return (
     <View>
       <View className={'w-full h-[180px] rounded-xl overflow-hidden relative '}>
-        <Image source={cardBg} className={'w-full h-full object-cover'} />
+        {/*<Text>{`${BaseUrl + item.image.file_url}`}</Text>*/}
+        <Link url={BaseUrl + item.image.file_url}>
+          {BaseUrl + item.image.file_url}
+        </Link>
+        {item?.image?.file_url ? (
+          <Image
+            source={{uri: BaseUrl + item?.image?.file_url}}
+            className={'w-full h-full object-cover'}
+          />
+        ) : null}
         <View
           className={
             'bg-white absolute bottom-1.5 right-1.5  w-[40px] h-[40px] justify-center items-center rounded-full'
@@ -26,9 +36,7 @@ export const Card = () => {
           className={'w-[35px] h-[35px] rounded-full object-cover'}
         />
         <View>
-          <Text className={'text-colorParagreph font-[600] '}>
-            Hamshiraning shahslar aro kommunikativ munosabatlari
-          </Text>
+          <Text className={'text-colorParagreph font-[600] '}>{item.name}</Text>
           <View className={'flex-row justify-center gap-2'}>
             <Text className={'text-colorOpacityText text-[10px]'}>
               Xasanov Davron
@@ -37,10 +45,10 @@ export const Card = () => {
               className={
                 'text-colorOpacityText border-colorOpacityText text-[10px] border border-y-0 px-2 '
               }>
-              3.9 o’rtacha reyting
+              {item?.average_rate ? item?.average_rate : 0} o’rtacha reyting
             </Text>
             <Text className={'text-colorOpacityText text-[10px]'}>
-              29 107 baholovchilar soni
+              {item?.rate_count ? item?.rate_count : 0} baholovchilar soni
             </Text>
           </View>
         </View>
@@ -48,3 +56,26 @@ export const Card = () => {
     </View>
   );
 };
+
+const Link = ({url, children}: {url: any; children: any}) => {
+  const handlePress = () => {
+    if (url) {
+      Linking.openURL(url).catch((err: any) =>
+        console.error('Havolani ochishda xatolik:', err),
+      );
+    }
+  };
+
+  return (
+    <Text style={styles.link} onPress={handlePress}>
+      {children}
+    </Text>
+  );
+};
+
+const styles = StyleSheet.create({
+  link: {
+    color: 'blue',
+    textDecorationLine: 'underline',
+  },
+});

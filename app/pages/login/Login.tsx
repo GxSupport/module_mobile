@@ -71,8 +71,7 @@ export const Login = () => {
       });
       await setStorage('access_token', token.data?.access_token);
       if (token.data?.access_token) {
-        // navigation.navigate('Home');
-        navigation.navigate('Main', {screen: "Home"});
+        navigation.navigate('Home');
       }
     } catch (error) {
       console.log(error);
@@ -252,6 +251,7 @@ export const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   figure: {
     backgroundColor: 'blue',

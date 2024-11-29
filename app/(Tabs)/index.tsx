@@ -3,8 +3,9 @@ import {StyleSheet} from 'react-native';
 import React from 'react';
 import Home from '../pages/home/Home';
 import Icon from 'react-native-vector-icons/Ionicons';
-import CourseList from '../pages/courses/CourseList';
 import {UserProfile} from '../pages/account/UserProfile';
+import {HeaderTitle} from '../components/helpers/headerTilte.tsx';
+import ChoosingDirectionStack from '../pages/direction/ChoosingStack.tsx';
 
 export const Tabs = () => {
   const Tab = createBottomTabNavigator();
@@ -19,31 +20,27 @@ export const Tabs = () => {
         name="Home"
         component={Home}
         options={{
-          headerTitle: 'Mening kurslarim',
+          headerTitle: () => <HeaderTitle title={'Mening kurslarim'} />,
           headerTitleAlign: 'center',
-          tabBarIcon: ({focused}) => (
+          tabBarIcon: ({focused}: {focused: boolean}) => (
             <Icon
               name="home"
-              className={`${
-                focused ? '!text-colorSpecial' : '!text-colorText'
-              }`}
+              className={`${focused ? '!text-blue-600' : '!text-gray-500'}`}
               size={27}
             />
           ),
         }}
       />
       <Tab.Screen
-        name="Courses"
-        component={CourseList}
+        name="ChoosingDirectionStack"
+        component={ChoosingDirectionStack}
         options={{
-          title: 'Courses',
+          headerShown: false,
           headerTitleAlign: 'center',
-          tabBarIcon: ({focused}) => (
+          tabBarIcon: ({focused}: {focused: boolean}) => (
             <Icon
               name="add-circle-outline"
-              className={`${
-                focused ? '!text-colorSpecial' : '!text-colorText'
-              }`}
+              className={`${focused ? '!text-blue-600' : '!text-gray-500'}`}
               size={27}
             />
           ),
@@ -53,14 +50,12 @@ export const Tabs = () => {
         name="UserProfile"
         component={UserProfile}
         options={{
-          title: 'Profile',
+          headerTitle: () => <HeaderTitle title={'Profile'} />,
           headerTitleAlign: 'center',
-          tabBarIcon: ({focused}) => (
+          tabBarIcon: ({focused}: {focused: boolean}) => (
             <Icon
               name="person-circle-outline"
-              className={`${
-                focused ? '!text-colorSpecial' : '!text-colorText'
-              }`}
+              className={`${focused ? '!text-blue-600' : '!text-gray-500'}`}
               size={27}
             />
           ),
@@ -76,10 +71,14 @@ const styles = StyleSheet.create({
     shadowColor: 'transparent',
   },
   tabBarStyle: {
-    backgroundColor: 'rgb(173,216,230)',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
     height: 60,
     paddingTop: 10,
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: -2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });

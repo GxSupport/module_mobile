@@ -22,9 +22,9 @@ DerivedData
 *.xcuserstate
 **/.xcode.env.local
 package-lock.json
+yarn.lock
 # Android/IntelliJ
 #
-build/
 .idea
 .gradle
 local.properties

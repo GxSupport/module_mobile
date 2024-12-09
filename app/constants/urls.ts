@@ -1,2 +1,2 @@
-const BaseUrl = ' https://api.edu.imedic.uz';
+const BaseUrl = 'https://api.edu.imedic.uz';
 export {BaseUrl};

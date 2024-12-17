@@ -23,6 +23,7 @@ DerivedData
 **/.xcode.env.local
 package-lock.json
 yarn.lock
+my-release-key.jks
 # Android/IntelliJ
 #
 .idea
@@ -33,7 +34,6 @@ local.properties
 .cxx/
 *.keystore
 !debug.keystore
-
 # node.js
 #
 node_modules/

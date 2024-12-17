@@ -11,7 +11,7 @@ function Button({className, children, loading, onPress}: TouchableType) {
       {loading ? (
         <ActivityIndicator className={'text-white'} size={'small'} />
       ) : (
-        <Text className={'text-white text-center text-[20px] font-bold'}>
+        <Text className={'text-white text-center text-[17px] font-bold'}>
           {children}
         </Text>
       )}

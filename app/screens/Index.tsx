@@ -11,7 +11,7 @@ export const InitialScreen = ({
   useEffect(() => {
     if (!isLoadToken) {
       if (token) {
-        navigation.replace('Tab');
+        navigation.replace('Tabs');
       } else {
         navigation.replace('Auth');
       }

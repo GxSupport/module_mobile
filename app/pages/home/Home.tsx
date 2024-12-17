@@ -10,51 +10,48 @@ import {
   View,
 } from 'react-native';
 import api from '../../config/api';
-import {Card} from '../../components/home/Card.tsx';
 import SkeletonLoader from '../../components/helpers/Skeleton.tsx';
 import {useFocusEffect} from '@react-navigation/native';
-
-interface DataType {
-  course_subject_id: string;
-}
+import IconMaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {DataType} from '../../types/Types.ts';
+import {Card} from '../../components/home/Card.tsx';
 
 function Home() {
-  const [data, setData] = useState<DataType[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [per_page, setPer_page] = useState<number>(10);
+  const [data, setData] = useState<DataType[] | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
 
-  const getMyCourseList = async (
-    pageNumber: number,
-  ): Promise<{data: DataType[]}> => {
+  const fetchData = useCallback(async () => {
+    if (loading || (data && data?.length >= total && total > 0)) {
+      return;
+    }
+    setLoading(true);
     try {
-      const res = await api({
+      const result = await api({
         method: 'GET',
-        url: `/api/nurse/course/list`,
+        url: '/api/nurse/course/list',
         params: {
-          per_page: pageNumber,
+          page: page,
+          per_page: 10,
         },
       });
-      return res.data;
-    } catch (e) {
-      throw e;
+      setData(prevData => [...(prevData || []), ...(result.data?.data || [])]);
+      setTotal(result.data.total);
+      setPage((prevPage: number) => prevPage + 1);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [loading, data, total, page]);
 
   useEffect(() => {
     (async () => {
-      setLoading(true);
-      try {
-        const res = await getMyCourseList(per_page);
-        setData(prevData => [...prevData, ...res.data]);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+      await fetchData();
     })();
-  }, [per_page]);
+  }, []);
 
-  // telefonda orqaga tugmani bosilgda ilovani yopish uchun
   useFocusEffect(
     useCallback(() => {
       const backAction = () => {
@@ -85,7 +82,7 @@ function Home() {
     }, []),
   );
 
-  if (data.length === 0 && loading) {
+  if (!data && loading) {
     return (
       <ScrollView className={'panel'}>
         <View>
@@ -113,27 +110,25 @@ function Home() {
 
   return (
     <SafeAreaView className="panel">
-      {data.length === 0 && !loading ? (
+      {data?.length === 0 && !loading ? (
         <View className="flex-1 justify-center items-center">
-          <Text>Ma'lumot topilmadi!</Text>
+          <Text className={'text-gray-500'}>Ma'lumot topilmadi!</Text>
+          <IconMaterialCommunityIcons
+            name={'note-remove-outline'}
+            size={40}
+            className={'!text-gray-500'}
+          />
         </View>
       ) : (
         <FlatList
           data={data}
-          renderItem={Card}
-          keyExtractor={(_, index) => index.toString()}
-          onEndReached={() => {
-            if (!loading) {
-              setPer_page(prevPage => prevPage + 10);
-            }
-          }}
+          renderItem={({item}) => <Card item={item} />}
+          keyExtractor={(item: DataType) => item.id.toString()}
+          onEndReached={fetchData}
           onEndReachedThreshold={0.1}
           ListFooterComponent={
             loading ? <ActivityIndicator size="large" color="#0000ff" /> : null
           }
-          initialNumToRender={10}
-          maxToRenderPerBatch={5}
-          windowSize={10}
         />
       )}
     </SafeAreaView>

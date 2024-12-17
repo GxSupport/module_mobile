@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, Text, View} from 'react-native';
+import {SafeAreaView, ScrollView, Text, View} from 'react-native';
 import CardBox from '../../components/choosingDirection/cardBox.tsx';
 import api from '../../config/api.ts';
 import {DirectonBoxTypes} from '../../types/Types.ts';
 import SkeletonLoader from '../../components/helpers/Skeleton.tsx';
+import IconMaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const image = require('../../assets/img/image.png');
 const image2 = require('../../assets/img/image2.png');
@@ -20,7 +21,6 @@ const ChoosingDirection = () => {
         method: 'GET',
         url: '/api/select/category',
       });
-
       let updatedData: DirectonBoxTypes[];
       updatedData = res.data.map((item: DirectonBoxTypes) => {
         const randomIndex = Math.floor(Math.random() * images.length);
@@ -68,17 +68,24 @@ const ChoosingDirection = () => {
   }
 
   return (
-    <ScrollView className={'panel'}>
+    <SafeAreaView className={'panel'}>
       {data.length === 0 && !loading ? (
         <View className="flex-1 justify-center items-center">
-          <Text>Ma'lumot topilmadi!</Text>
+          <Text className={'text-gray-500'}>Ma'lumot topilmadi!</Text>
+          <IconMaterialCommunityIcons
+            name={'note-remove-outline'}
+            size={40}
+            className={'!text-gray-500'}
+          />
         </View>
       ) : (
-        data.map((item: DirectonBoxTypes) => {
-          return <CardBox item={item} key={item.id} />;
-        })
+        <ScrollView>
+          {data.map((item: DirectonBoxTypes) => {
+            return <CardBox item={item} key={item.id} />;
+          })}
+        </ScrollView>
       )}
-    </ScrollView>
+    </SafeAreaView>
   );
 };
 

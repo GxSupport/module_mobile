@@ -99,9 +99,9 @@ android {
         }
          release {
             storeFile file('/home/abduvali/My folder/Projects/React native/module_mobile/android/app/my-release-key.jks')
-            storePassword 'imedic'
+            storePassword 'imedicimedic'
             keyAlias 'imedicUpload'
-            keyPassword 'imedic'
+            keyPassword 'imedicimedic'
         }
     }
     buildTypes {
@@ -111,7 +111,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }

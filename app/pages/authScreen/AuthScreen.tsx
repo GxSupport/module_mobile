@@ -163,12 +163,12 @@ export const AuthScreen = ({
   return (
     <KeyboardAvoidingView
       className={'bg-white flex-1'}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      behavior={'padding'}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View
           className={`flex-1 bg-white ${
-            keyboardVisible ? 'pb-[250px]' : 'pb-0'
-          } `}>
+            keyboardVisible ? 'pb-[300px]' : 'pb-0'
+          }`}>
           <ToastCustom
             setToastcustom={setToastcustom}
             toastCustom={toastCustom}

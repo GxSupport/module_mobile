@@ -12,7 +12,7 @@ import {RouteProp, useRoute} from '@react-navigation/native';
 import {CommentBoxPropTypes, RouteParams} from '../../types/Types.ts';
 import Feather from 'react-native-vector-icons/Feather';
 import {FormatTime, getColor} from '../../helpers/Formats.ts';
-
+// api/nurse/notion/comment
 type DirectionRouteProp = RouteProp<{params: {params: RouteParams}}, 'params'>;
 
 function ViewComment() {
@@ -21,6 +21,7 @@ function ViewComment() {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [isCommentLoading, setIsCommentLoading] = useState<boolean>(false);
+  const [input, setInput] = useState<string>('');
   const getComments = async () => {
     if (
       isCommentLoading ||
@@ -35,7 +36,7 @@ function ViewComment() {
         url: `/api/receive-comment?course_subjects_id=${params.params.course_subject_id}`,
         method: 'post',
         params: {
-          page: page,
+          page,
           per_page: 10,
         },
       });
@@ -43,12 +44,27 @@ function ViewComment() {
         ...(prevData || []),
         ...(res?.data?.data || []),
       ]);
-      setTotal(res.data.total);
+      setTotal(res.data.total || 0);
       setPage((prevPage: number) => prevPage + 1);
     } catch (error) {
       console.error(error);
     } finally {
       setIsCommentLoading(false);
+    }
+  };
+
+  const sendComment = async () => {
+    if (input.trim().length) {
+      const res = await api('/api/nurse/notion/comment', {
+        method: 'POST',
+        data: {
+          course_subjects_id: params.params.course_subject_id,
+          comment: input,
+        },
+      }).catch(error => {
+        console.error(error);
+      });
+      setInput('')
     }
   };
 
@@ -70,8 +86,12 @@ function ViewComment() {
           index: number;
         }) => <CommentBox item={item} index={index} />}
         keyExtractor={(_, index: number) => index.toString()}
-        onEndReached={getComments}
-        onEndReachedThreshold={0.1}
+        onEndReached={async () => {
+          if (!isCommentLoading && comments.length < total) {
+            await getComments();
+          }
+        }}
+        onEndReachedThreshold={0.3}
         ListFooterComponent={
           isCommentLoading ? (
             <ActivityIndicator size="large" color="#0000ff" />
@@ -82,8 +102,13 @@ function ViewComment() {
         className={
           'flex-row items-center gap-2 bg-colorBoxWhite px-4 py-1 mt-1 rounded-xl'
         }>
-        <TextInput placeholder={'Xabar yuborish...'} className={'w-11/12'} />
-        <TouchableOpacity>
+        <TextInput
+          placeholder={'Xabar yuborish...'}
+          className={'w-11/12'}
+          onChangeText={setInput}
+          value={input}
+        />
+        <TouchableOpacity onPress={sendComment}>
           <Feather name={'send'} size={22} className={'!text-green-500'} />
         </TouchableOpacity>
       </View>

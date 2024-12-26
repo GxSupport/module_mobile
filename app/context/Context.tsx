@@ -6,6 +6,7 @@ import React, {
   useEffect,
 } from 'react';
 import {getStorage} from '../helpers/Storage.ts';
+import {CommentBoxPropTypes} from '../types/Types.ts';
 
 interface ContextType {
   token?: string | null;
@@ -18,9 +19,11 @@ export const Context = createContext<ContextType | undefined>(undefined);
 interface ContextProviderProps {
   children: ReactNode;
 }
+
 export const ContextProvider: React.FC<ContextProviderProps> = ({children}) => {
   const [token, setToken] = useState<string | null>(null);
   const [isLoadToken, setIsLoadToken] = useState<boolean>(true);
+
   useEffect(() => {
     (async () => {
       try {
@@ -35,8 +38,14 @@ export const ContextProvider: React.FC<ContextProviderProps> = ({children}) => {
       }
     })();
   }, []);
+
   return (
-    <Context.Provider value={{token, setToken, isLoadToken}}>
+    <Context.Provider
+      value={{
+        token,
+        setToken,
+        isLoadToken,
+      }}>
       {children}
     </Context.Provider>
   );

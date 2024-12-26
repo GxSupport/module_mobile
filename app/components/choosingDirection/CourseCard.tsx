@@ -12,7 +12,12 @@ function CourseCard({item}: {item: CourseCardTypes}) {
       onPress={() =>
         //@ts-ignore
         navigation.navigate('CourseTabs', {
-          params: {id: item.id, course_subject_id: item?.course_subject_id, isHome: item?.isHome},
+          params: {
+            id: item.id,
+            course_subject_id: item?.course_subject_id,
+            isHome: item?.isHome,
+            label: item.name,
+          },
         })
       }>
       <View className={'h-[400px]'}>

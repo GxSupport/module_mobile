@@ -1,23 +1,35 @@
 import React, {useState} from 'react';
 import {Text, TouchableOpacity, useWindowDimensions, View} from 'react-native';
-import {TabView, SceneMap} from 'react-native-tab-view';
+import {TabView} from 'react-native-tab-view';
 import ViewPdf from '../pages/CourseTabs/ViewPDF.tsx';
 import ViewVideo from '../pages/CourseTabs/ViewVideo.tsx';
 import {CustomTabComponent} from '../components/helpers/TabBarCustom.tsx';
 import ViewComment from '../pages/CourseTabs/ViewComment.tsx';
-import {useNavigation} from '@react-navigation/native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
+import {RouteParams} from '../types/Types.ts';
+
+type DirectionRouteProp = RouteProp<{params: {params: RouteParams}}, 'params'>;
 
 export default function CourseTabs() {
+  const {params} = useRoute<DirectionRouteProp>();
+
   const navigation = useNavigation();
   const layout = useWindowDimensions();
   const [index, setIndex] = useState<number>(0);
 
-  const renderScene = SceneMap({
-    view_pdf: () => <ViewPdf />,
-    view_video: () => <ViewVideo />,
-    view_comment: () => <ViewComment />,
-  });
+  const renderScene = ({route}: {route: {key: string}}) => {
+    switch (route.key) {
+      case 'view_pdf':
+        return <ViewPdf />;
+      case 'view_video':
+        return <ViewVideo />;
+      case 'view_comment':
+        return <ViewComment />;
+      default:
+        return null;
+    }
+  };
 
   const routes = [
     {key: 'view_pdf', title: 'ViewPdf'},
@@ -41,7 +53,7 @@ export default function CourseTabs() {
           }
           numberOfLines={1}
           ellipsizeMode={'tail'}>
-          O’zbekistonda tez tibbiy yordam tizimini
+          {params.params.label}
         </Text>
       </View>
       <TabView

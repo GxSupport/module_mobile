@@ -17,7 +17,11 @@ export const Card: React.FC<SingleCardProps> = ({item}) => {
       className={'my-1'}
       onPress={() =>
         //@ts-ignore
-        navigation.navigate('NourseCourseListCategoryID', {id: item.id, isHome: true})
+        navigation.navigate('NourseCourseListCategoryID', {
+          id: item.id,
+          isHome: true,
+          label: item.course.name,
+        })
       }>
       <View className={'w-full h-[180px] rounded-xl overflow-hidden relative'}>
         {item?.course?.image.file_url ? (

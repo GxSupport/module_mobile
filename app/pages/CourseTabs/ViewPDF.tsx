@@ -1,55 +1,85 @@
-import React from 'react';
-import {StyleSheet, Dimensions, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  StyleSheet,
+  Dimensions,
+  View,
+  ActivityIndicator,
+} from 'react-native';
 import Pdf from 'react-native-pdf';
-// import ReactNativeBlobUtil from 'react-native-blob-util';
+import api from '../../config/api.ts';
+import {RouteProp, useRoute} from '@react-navigation/native';
+import {RouteParams} from '../../types/Types.ts';
+import {BaseUrl} from '../../constants/urls.ts';
 
-// ReactNativeBlobUtil.config({
-//   trusty: true,
-// });
+type DirectionRouteProp = RouteProp<{params: {params: RouteParams}}, 'params'>;
 
-export default class PDFExample extends React.Component {
-  render() {
-    const source = {
-      uri: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-      cache: true,
-    };
-    //const source = require('./test.pdf');  // ios only
-    //const source = {uri:'bundle-assets://test.pdf' };
-    //const source = {uri:'file:///sdcard/test.pdf'};
-    //const source = {uri:"data:application/pdf;base64,JVBERi0xLjcKJc..."};
-    //const source = {uri:"content://com.example.blobs/xxxxxxxx-...?offset=0&size=xxx"};
-    //const source = {uri:"blob:xxxxxxxx-...?offset=0&size=xxx"};
+export default function PDFExample() {
+  const {params} = useRoute<DirectionRouteProp>();
+  const [pdfUrl, setPdfUrl] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const source = {
+    uri: BaseUrl + pdfUrl,
+    cache: false,
+  };
 
+  const getPdfUrlHome = async () => {
+    setLoading(true);
+    try {
+      const res = await api(`/api/nurse/subject/item/${params.params.id}`);
+      setPdfUrl(res.data?.content?.media?.[0]?.file_url);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const getPdfUrl = async () => {
+    setLoading(true);
+    try {
+      const res = await api(
+        `/api/nurse/course/subject/${params.params.course_subject_id}`,
+      );
+      setPdfUrl(res.data.media?.[0]?.file_url);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      if (params.params.isHome) {
+        await getPdfUrlHome();
+      } else {
+        await getPdfUrl();
+      }
+    })();
+  }, []);
+
+  if (loading) {
     return (
-      <View style={styles.container}>
-        {/*<Pdf*/}
-        {/*  source={source}*/}
-        {/*  onLoadComplete={(numberOfPages, filePath) => {*/}
-        {/*    console.log(`Number of pages: ${numberOfPages}`);*/}
-        {/*  }}*/}
-        {/*  onPageChanged={(page, numberOfPages) => {*/}
-        {/*    console.log(`Current page: ${page}`);*/}
-        {/*  }}*/}
-        {/*  onError={error => {*/}
-        {/*    console.log(error);*/}
-        {/*  }}*/}
-        {/*  onPressLink={uri => {*/}
-        {/*    console.log(`Link pressed: ${uri}`);*/}
-        {/*  }}*/}
-        {/*  style={styles.pdf}*/}
-        {/*/>*/}
+      <View className={'panel flex-1 justify-center items-center'}>
+        {/*<Text className={'text-center '} >Loading...</Text>*/}
+        <ActivityIndicator size="large" />
       </View>
     );
   }
+  return (
+    <View className={'flex-1 justify-start items-center panel p-0 pb-20'}>
+      <Pdf
+        trustAllCerts={false}
+        source={source}
+        style={styles.pdf}
+        // onPageChanged={(page,numberOfPages) => {
+        //   console.log(`Current page: ${page}`);
+        // }}
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    marginTop: 25,
-  },
   pdf: {
     flex: 1,
     width: Dimensions.get('window').width,

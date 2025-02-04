@@ -19,6 +19,7 @@ export interface RouteParams {
   id: string | number;
   isHome?: boolean;
   course_subject_id: string;
+  label?: string;
 }
 
 export interface ToastPropTypes {

@@ -98,10 +98,12 @@ android {
             keyPassword 'android'
         }
          release {
-            storeFile file('/home/abduvali/My folder/Projects/React native/module_mobile/android/app/my-release-key.jks')
-            storePassword 'imedic'
-            keyAlias 'imedicUpload'
-            keyPassword 'imedic'
+           release {
+            storeFile file(MYAPP_RELEASE_STORE_FILE)
+            storePassword MYAPP_RELEASE_STORE_PASSWORD
+            keyAlias MYAPP_RELEASE_KEY_ALIAS
+            keyPassword MYAPP_RELEASE_KEY_PASSWORD
+        }
         }
     }
     buildTypes {
@@ -111,7 +113,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -124,6 +126,7 @@ android {
           pickFirst 'lib/x86_64/libc++_shared.so'
           pickFirst 'lib/armeabi-v7a/libc++_shared.so'
      }
+
 }
 
 dependencies {

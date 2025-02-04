@@ -43,7 +43,7 @@ function ViewVideo() {
   const playerRef = useRef<VideoPlayerRef>(null);
   return (
     <SafeAreaView className={'panel'}>
-      {!videoUrl ? (
+      {videoUrl ? (
         <VideoPlayer
           ref={playerRef}
           endWithThumbnail
